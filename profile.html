@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Profile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="profile-container">
+
+    <div class="profile-card">
+
+      <h1>Your Profile</h1>
+
+      <p><strong>Username:</strong> <span id="profileUsername"></span></p>
+      <p><strong>Level:</strong> <span id="profileLevel"></span></p>
+      <p><strong>Points:</strong> <span id="profilePoints"></span></p>
+      <span>Points: <strong id="globalPoints">0</strong></span>
+      <hr>
+
+      <h2>Current Outfit</h2>
+      <p id="profileOutfit"></p>
+
+      <h2>Owned Outfits</h2>
+      <ul id="ownedOutfitsList" class="profile-list"></ul>
+
+      <h2>Owned Items</h2>
+      <ul id="ownedItemsList" class="profile-list"></ul>
+
+      <div class="profile-buttons">
+        <button onclick="window.location.href='index.html'">Home</button>
+        <button onclick="logout()">Log Out</button>
+      </div>
+      <button onclick="window.location.href='shop.html'">Shop</button>
+
+    </div>
+
+  </div>
+
+<script type="module">
+  import { auth, db } from "./firebase-init.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+  auth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location.href = "signin.html";
+      return;
+    }
+
+    // Show email as username
+    document.getElementById("profileUsername").textContent = user.email;
+
+    // Load Firestore user data
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      console.log("No user data found in Firestore");
+      return;
+    }
+
+    const data = snap.data();
+
+    document.getElementById("profileLevel").textContent = data.level || 1;
+    document.getElementById("profilePoints").textContent = data.points || 0;
+    document.getElementById("globalPoints").textContent = data.points || 0;
+    document.getElementById("profileOutfit").textContent = data.currentOutfit || "Default";
+
+    const outfitsList = document.getElementById("ownedOutfitsList");
+    outfitsList.innerHTML = "";
+    (data.ownedOutfits || []).forEach(o => {
+      const li = document.createElement("li");
+      li.textContent = o;
+      outfitsList.appendChild(li);
+    });
+
+    const itemsList = document.getElementById("ownedItemsList");
+    itemsList.innerHTML = "";
+    (data.ownedItems || []).forEach(i => {
+      const li = document.createElement("li");
+      li.textContent = i;
+      itemsList.appendChild(li);
+    });
+  });
+
+  // Firebase logout
+  import { signOut } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+  window.logout = () => {
+    signOut(auth).then(() => {
+      window.location.href = "signin.html";
+    });
+  };
+</script>
+
+
+</body>
+</html>

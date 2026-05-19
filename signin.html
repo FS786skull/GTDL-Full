@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign In</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="auth-container">
+    <a href="index.html" class="home-button">← Home</a>
+    <h1>Sign In</h1>
+
+    <input id="signinEmail" type="email" placeholder="Email" />
+    <input id="signinPassword" type="password" placeholder="Password" />
+
+    <button id="signinBtn">Sign In</button>
+
+    <p id="signinMessage"></p>
+
+    <p>
+      Don't have an account?
+      <a href="signup.html">Create one</a>
+    </p>
+  </div>
+
+  <!-- Firebase + Sign In Logic -->
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="signin.js"></script>
+</body>
+</html>

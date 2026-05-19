@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task History</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+  document.body.className = localStorage.getItem("theme") || "";
+</script>
+
+<nav class="navbar">
+  <div class="logo">Productivity Quest</div>
+  <div>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="history.html" class="nav-link">History</a>
+    <a href="profile.html" class="nav-link">Profile</a>
+    <button class="nav-link" onclick="logout()">Log Out</button>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Task History</h2>
+  <ul id="fullHistoryList"></ul>
+</div>
+
+<script src="auth.js"></script>
+<script src="storage.js"></script>
+<script>
+  const state = loadState();
+  const history = state.completedTasks || [];
+  const list = document.getElementById("fullHistoryList");
+
+  if (history.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "No completed tasks yet.";
+    list.appendChild(li);
+  } else {
+    history.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = `${item.text} — completed at ${new Date(item.completedAt).toLocaleString()}`;
+      list.appendChild(li);
+    });
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    alert("You have been logged out.");
+    window.location.href = "signin.html";
+  }
+</script>
+</body>
+</html>

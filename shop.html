@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop — Task Master</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Small shop-specific overrides */
+    .shop-container { max-width:900px; margin:40px auto; padding:20px; }
+    .shop-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+    .shop-card { background:var(--card-bg,#fff); padding:14px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); text-align:center; }
+    .shop-card h3 { margin:8px 0; }
+    .shop-price { font-weight:700; margin:8px 0; }
+    .shop-card button { padding:8px 12px; border-radius:8px; border:none; background:var(--button-bg,#4a90e2); color:#fff; cursor:pointer; }
+    .shop-card button[disabled] { opacity:0.6; cursor:default; }
+    .shop-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+    nav a { margin-right:12px; color:var(--text-color); text-decoration:none; }
+    .shop-preview { width:72px; height:96px; border-radius:8px; box-shadow: inset 0 -6px 12px rgba(0,0,0,0.06); }
+  </style>
+</head>
+<body>
+  <script>
+    // Initialize theme from saved state (prefer shared state if available)
+    (function(){
+      try {
+        if (typeof loadState === 'function') {
+          const s = loadState();
+          document.body.setAttribute('data-theme', s && s.theme ? s.theme : 'light');
+        } else {
+          const t = localStorage.getItem("theme") || "light";
+          document.body.setAttribute("data-theme", t);
+        }
+      } catch (e) {
+        document.body.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+      }
+    })();
+  </script>
+
+  <div class="shop-container">
+    <div class="shop-header">
+      <h1>Outfit Shop</h1>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-weight:600;">Points: <span id="shopPoints">0</span></div>
+        <div>
+          <a class="home-button" href="index.html">Home</a>
+          <a class="home-button" href="profile.html">Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <nav style="margin-bottom:18px;">
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+    </nav>
+
+    <h2>Outfits</h2>
+    <div class="shop-grid" id="outfitsGrid" aria-live="polite"></div>
+
+    <h2 style="margin-top:22px;">Accessories & Items</h2>
+    <div class="shop-grid" id="itemsGrid" aria-live="polite"></div>
+  </div>
+
+  <!-- Core scripts: load shared helpers and state first -->
+
+  <!-- Provide the catalog as globals so shop.js can use them -->
+  <script>
+    window.SHOP_OUTFITS = [
+      { id: "blue", label: "Blue Outfit", price: 50 },
+      { id: "knight", label: "Knight Armor", price: 120 },
+      { id: "ninja", label: "Ninja Suit", price: 90 },
+      { id: "explorer", label: "Explorer Gear", price: 80 },
+      { id: "purple", label: "Purple Set", price: 60 },
+      { id: "red", label: "Red Set", price: 60 }
+    ];
+
+    window.SHOP_ITEMS = [
+      { id: "hat", label: "Fancy Hat", price: 30 },
+      { id: "cape", label: "Hero Cape", price: 40 },
+      { id: "badge", label: "Golden Badge", price: 25 }
+    ];
+  </script>
+
+
+  <script>
+    // Small compatibility: ensure legacy keys exist if storage.js didn't run yet
+    (function legacySync() {
+      try {
+        if (typeof loadState === 'function') {
+          const s = loadState();
+          if (s) {
+            localStorage.setItem('points', String(s.points || 0));
+            localStorage.setItem('balance', String(s.points || 0));
+            if (Array.isArray(s.ownedOutfits)) localStorage.setItem('ownedOutfits', JSON.stringify(s.ownedOutfits));
+            if (Array.isArray(s.ownedItems)) localStorage.setItem('ownedItems', JSON.stringify(s.ownedItems));
+            if (s.currentOutfit) localStorage.setItem('currentOutfit', s.currentOutfit);
+          }
+        }
+      } catch (e) { /* ignore */ }
+    })();
+
+    // Render the shop once DOM and shop.js are ready
+    document.addEventListener('DOMContentLoaded', () => {
+      // If shop.js exposes renderShop, use it; otherwise call the inline renderer fallback
+      if (typeof renderShop === 'function') {
+        renderShop();
+      } else {
+        // Fallback renderer (keeps behavior if shop.js didn't load)
+        (function fallbackRender() {
+          const outfitsGrid = document.getElementById("outfitsGrid");
+          const itemsGrid = document.getElementById("itemsGrid");
+          if (!outfitsGrid || !itemsGrid) return;
+          const points = (typeof loadState === 'function') ? (loadState().points || 0) : (parseInt(localStorage.getItem('points')||'0',10) || 0);
+          document.getElementById("shopPoints").textContent = points;
+
+          outfitsGrid.innerHTML = '';
+          (window.SHOP_OUTFITS || []).forEach(o => {
+            const owned = (typeof loadState === 'function') ? (loadState().ownedOutfits || []).includes(o.id) : (JSON.parse(localStorage.getItem('ownedOutfits')||'[]').includes(o.id));
+            const affordable = points >= o.price;
+            const card = document.createElement('div');
+            card.className = 'shop-card';
+            card.innerHTML = `
+              <h3>${o.label}</h3>
+              <div class="shop-price">${o.price} pts</div>
+              <div style="height:72px;display:flex;align-items:center;justify-content:center;">
+                <div class="shop-preview" style="background:linear-gradient(180deg,var(--shirt-top,#e74c3c),var(--shirt-bottom,#c0392b));"></div>
+              </div>
+              <div style="margin-top:10px;">
+                <button ${owned ? 'disabled' : ''} data-id="${o.id}" data-price="${o.price}">
+                  ${owned ? 'Owned' : (affordable ? 'Buy' : 'Not enough pts')}
+                </button>
+              </div>
+            `;
+            outfitsGrid.appendChild(card);
+          });
+
+          itemsGrid.innerHTML = '';
+          (window.SHOP_ITEMS || []).forEach(i => {
+            const owned = (typeof loadState === 'function') ? (loadState().ownedItems || []).includes(i.id) : (JSON.parse(localStorage.getItem('ownedItems')||'[]').includes(i.id));
+            const affordable = points >= i.price;
+            const card = document.createElement('div');
+            card.className = 'shop-card';
+            card.innerHTML = `
+              <h3>${i.label}</h3>
+              <div class="shop-price">${i.price} pts</div>
+              <div style="height:72px;display:flex;align-items:center;justify-content:center;">
+                <div style="width:48px;height:48px;border-radius:6px;background:#ffd54f;"></div>
+              </div>
+              <div style="margin-top:10px;">
+                <button ${owned ? 'disabled' : ''} data-id="${i.id}" data-price="${i.price}">
+                  ${owned ? 'Owned' : (affordable ? 'Buy' : 'Not enough pts')}
+                </button>
+              </div>
+            `;
+            itemsGrid.appendChild(card);
+          });
+
+          // Attach handlers
+          outfitsGrid.querySelectorAll('button').forEach(b => {
+            b.addEventListener('click', () => {
+              const id = b.dataset.id;
+              const price = parseInt(b.dataset.price, 10) || 0;
+              if (typeof buyOutfit === 'function') return buyOutfit(id, price);
+              // fallback: simple local purchase
+              let pts = parseInt(localStorage.getItem('points')||'0',10) || 0;
+              if (pts < price) { alert('Not enough points.'); return; }
+              pts -= price;
+              localStorage.setItem('points', String(pts));
+              const owned = JSON.parse(localStorage.getItem('ownedOutfits')||'[]');
+              if (!owned.includes(id)) owned.push(id);
+              localStorage.setItem('ownedOutfits', JSON.stringify(owned));
+              localStorage.setItem('currentOutfit', id);
+              if (typeof updateAvatarVisuals === 'function') updateAvatarVisuals();
+              renderShop();
+            });
+          });
+
+          itemsGrid.querySelectorAll('button').forEach(b => {
+            b.addEventListener('click', () => {
+              const id = b.dataset.id;
+              const price = parseInt(b.dataset.price, 10) || 0;
+              if (typeof buyItem === 'function') return buyItem(id, price);
+              let pts = parseInt(localStorage.getItem('points')||'0',10) || 0;
+              if (pts < price) { alert('Not enough points.'); return; }
+              pts -= price;
+              localStorage.setItem('points', String(pts));
+              const owned = JSON.parse(localStorage.getItem('ownedItems')||'[]');
+              if (!owned.includes(id)) owned.push(id);
+              localStorage.setItem('ownedItems', JSON.stringify(owned));
+              if (id === 'badge') localStorage.setItem('badge', 'true');
+              if (typeof updateAvatarVisuals === 'function') updateAvatarVisuals();
+              renderShop();
+            });
+          });
+        })();
+      }
+    });
+  </script>
+  
+<script src="ui-stubs.js"></script>
+<script src="storage.js"></script>   
+<script src="rewards.js"></script>
+<script src="crafting.js"></script>
+<script src="app.js"></script>
+<script src="shop.js"></script>     
+
+</body>
+</html>

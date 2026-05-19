@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</script> 
+ 
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Master</title>
+
+
+  <link rel="stylesheet" href="style.css" >
+  <link rel="stylesheet" href="avatar.css">
+
+</head>
+
+<body>
+
+  <div class="app-container">
+
+    <header class="app-header">
+      <h1 class="app-title">Task Master</h1>
+
+      <div class="top-controls">
+
+        <!-- AVATAR PANEL -->
+        <div class="avatar-panel">
+          <div id="avatar" class="avatar-body avatar-wrapper" role="img" aria-label="User avatar">
+
+            <!-- ✅ FIXED: Only ONE SVG avatar -->
+            <svg id="avatarSVG" viewBox="0 0 120 180" width="160" height="240" aria-hidden="true">
+              <defs>
+                <linearGradient id="shirtGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="var(--shirt-top,#e74c3c)" />
+                  <stop offset="1" stop-color="var(--shirt-bottom,#c0392b)" />
+                </linearGradient>
+
+                <linearGradient id="pantsGrad" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0" stop-color="var(--pants-top,#6a1b9a)" />
+                  <stop offset="1" stop-color="var(--pants-bottom,#4a0f7a)" />
+                </linearGradient>
+              </defs>
+
+              <g id="hat" transform="translate(28,6)">
+                <rect x="0" y="0" width="64" height="14" rx="3" fill="var(--hat,#222)" />
+              </g>
+
+              <g id="head">
+                <circle cx="60" cy="36" r="28" fill="var(--skin,#ffe0b3)" />
+                <g id="eyes">
+                  <circle class="eye left" cx="48" cy="34" r="4" fill="#111" />
+                  <circle class="eye right" cx="72" cy="34" r="4" fill="#111" />
+                </g>
+                <path id="mouth" d="M48 48 Q60 56 72 48" stroke="#8b3" stroke-width="2" fill="none" stroke-linecap="round" />
+              </g>
+
+              <g id="torso">
+                <rect x="24" y="70" width="72" height="64" rx="10" fill="url(#shirtGrad)" />
+                <rect x="36" y="82" width="48" height="8" rx="2" fill="rgba(255,255,255,0.08)" />
+              </g>
+
+              <g id="legs">
+                <rect x="24" y="134" width="72" height="36" rx="8" fill="url(#pantsGrad)" />
+              </g>
+
+              <g id="badge" style="display:none">
+                <circle cx="90" cy="92" r="6" fill="#ffd54f" stroke="#b8860b" stroke-width="1" />
+              </g>
+            </svg>
+
+          </div>
+
+          <!-- AVATAR CONTROLS (unchanged) -->
+          <div class="avatar-controls">
+
+            <div class="control-row">
+              <label><strong>Outfit</strong></label>
+              <select id="outfitSelect">
+                <option value="">Default</option>
+                <option value="blue">Blue</option>
+                <option value="red">Red</option>
+                <option value="purple">Purple</option>
+                <option value="ninja">Ninja</option>
+                <option value="knight">Knight</option>
+                <option value="explorer">Explorer</option>
+              </select>
+            </div>
+
+            <div class="control-row avatar-color-row">
+              <label>Skin <input type="color" id="skinColor" data-part="skin"></label>
+              <label>Shirt <input type="color" id="shirtTopColor" data-part="shirtTop"></label>
+              <label>Pants <input type="color" id="pantsColor" data-part="pantsTop"></label>
+              <label>Hat <input type="color" id="hatColor" data-part="hat"></label>
+            </div>
+
+            <div class="control-row">
+              <label><strong>Gradient</strong></label>
+              <select id="gradientPresetSelect">
+                <option value="flat">Flat</option>
+                <option value="sunset">Sunset</option>
+                <option value="ocean">Ocean</option>
+                <option value="metal">Metal</option>
+                <option value="custom">Custom</option>
+              </select>
+              <button id="editGradientBtn">Edit Stops</button>
+            </div>
+
+            <div id="gradient-editor" class="modal" style="display:none">
+              <div class="modal-inner">
+                <button id="closeGradientEditor">Close</button>
+                <label>Stop 1 <input type="color" id="gradStop1"></label>
+                <label>Stop 2 <input type="color" id="gradStop2"></label>
+                <button id="applyGradientStops">Apply</button>
+              </div>
+            </div>
+
+            <div class="control-row">
+              <label><input type="checkbox" id="visorToggle"> Tech Visor</label>
+              <label><input type="checkbox" id="glowToggle"> Aura Glow</label>
+              <label><input type="checkbox" id="badgeToggle"> Badge</label>
+            </div>
+
+            <div class="control-row">
+              <label><strong>Eye Style</strong></label>
+              <select id="eyeStyleSelect">
+                <option value="normal">Normal</option>
+                <option value="bright">Bright</option>
+                <option value="tech">Tech</option>
+              </select>
+            </div>
+
+            <div class="control-row" id="badgeMenuRow" style="display:none">
+              <label><strong>Badge Shape</strong></label>
+              <select id="badgeShapeSelect">
+                <option value="circle">Circle</option>
+                <option value="star">Star</option>
+                <option value="shield">Shield</option>
+                <option value="hex">Hexagon</option>
+              </select>
+              <button id="applyBadgeShape">Apply</button>
+            </div>
+
+            <button id="randomizeAvatar">Randomize Avatar</button>
+
+            <div class="control-row">
+              <strong>Expression</strong>
+              <button class="expr-btn" data-expr="idle">Idle</button>
+              <button class="expr-btn" data-expr="happy">Happy</button>
+              <button class="expr-btn" data-expr="focused">Focused</button>
+            </div>
+
+            <div class="control-row">
+              <button id="playJump">Play Jump</button>
+              <button id="toggleBadge">Toggle Badge</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="avatar-info">
+          <p>Level: <span id="level">1</span></p>
+          <div class="xp-bar-container"><div id="xpBar" class="xp-bar"></div></div>
+          <p>Points: <span id="points">0</span></p>
+        </div>
+
+      </div>
+
+      <div class="theme-selector">
+        <label>Theme:</label>
+        <select id="themeSelect">
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+          <option value="sunsetglow">Sunset Glow</option>
+          <option value="nebula">Nebula</option>
+          <option value="meadow">Meadow</option>
+          <option value="frost">Frost</option>
+          <option value="pasteldream">Pastel Dream</option>
+          <option value="inferno">Inferno</option>
+        </select>
+      </div>
+
+      <div class="nav-buttons">
+        <button onclick="window.location.href='profile.html'">Profile</button>
+        <button onclick="window.location.href='shop.html'">Shop</button>
+      </div>
+
+    </header>
+
+    <!-- CRAFTING MODAL -->
+    <div id="crafting-modal" class="modal">
+      <div class="modal-inner">
+        <button id="close-craft">Close</button>
+        <div id="crafting-list"></div>
+        <button id="craft-button">Craft Explorer Outfit</button>
+      </div>
+    </div>
+
+    <!-- TASKS -->
+    <main class="app-main">
+      <div class="task-input-area">
+        <input id="taskInput" placeholder="Enter a task..." />
+        <button id="addTaskBtn">Add Task</button>
+      </div>
+
+      <section class="task-section">
+        <h2>Your Tasks</h2>
+        <ul id="taskList"></ul>
+      </section>
+
+      <section class="task-section">
+        <h2>Completed Tasks</h2>
+        <ul id="completedTasks"></ul>
+      </section>
+
+      <section class="suggested-section">
+        <h2>Suggested Tasks</h2>
+        <button id="refreshSuggestions">Refresh Suggestions</button>
+        <ul id="suggestedTasks"></ul>
+      </section>
+    </main>
+
+  </div>
+
+  <!-- FIREBASE MODULES -->
+  <script type="module" src="firebase-init.js"></script>
+  <script type="module" src="app.js"></script>
+
+  <!-- CORE SCRIPTS (ORDER MATTERS) -->
+  <script src="ui-stubs.js"></script>
+  <script src="storage.js"></script>
+  <script src="avatar.js"></script>
+  <script src="rewards.js"></script>
+  <script src="crafting.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

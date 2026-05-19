@@ -1,0 +1,282 @@
+/* style.css — cleaned version (avatar rules removed) */
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.top-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.avatar-panel { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; }
+.avatar-wrapper { width:160px; height:240px; display:flex; align-items:center; justify-content:center; filter: drop-shadow(0 0 4px rgba(0,0,0,0.25)); }
+
+.avatar-controls { display:flex; flex-direction:column; gap:8px; }
+.control-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+.avatar-controls select,
+.avatar-controls input[type="color"],
+.avatar-controls input[type="checkbox"],
+.expr-btn,
+#playJump,
+#toggleBadge {
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid rgba(0,0,0,0.08);
+  background:var(--button-bg,#f0f0f0);
+  cursor:pointer;
+}
+
+.avatar-controls select { min-width:140px; }
+
+.avatar-controls input[type="color"] {
+  width: 40px;
+  height: 32px;
+  padding:0;
+  border:none;
+  background:none;
+}
+
+.avatar-controls input[type="checkbox"] {
+  accent-color: #4a90e2;
+}
+
+:root {
+  --skin: #ffe0b3;
+  --hat: #222;
+  --shirt-top: #e74c3c;
+  --shirt-bottom: #c0392b;
+  --pants-top: #6a1b9a;
+  --pants-bottom: #4a0f7a;
+}
+
+/* XP + Points */
+.avatar-info {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.xp-bar-container {
+  width:100%;
+  height:10px;
+  background:#ddd;
+  border-radius:5px;
+  overflow:hidden;
+}
+
+.xp-bar {
+  height:100%;
+  width:0%;
+  background:#4a90e2;
+  transition:width 0.3s ease;
+}
+
+/* Tasks */
+.task-input-area {
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.task-input-area input {
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+
+.task-input-area button {
+  padding:12px 18px;
+  border-radius:10px;
+  border:none;
+  background:var(--button-bg,#4a90e2);
+  color:white;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.task-input-area button:hover { opacity:0.85; }
+
+.task-section,
+.suggested-section {
+  background:var(--card-bg,#ffffff);
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  margin-bottom:20px;
+}
+
+#taskList,
+#completedTasks,
+#suggestedTasks {
+  list-style:none;
+  padding-left:0;
+}
+
+#taskList li,
+#completedTasks li,
+#suggestedTasks li {
+  background:rgba(0,0,0,0.05);
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+#taskList button,
+#completedTasks button,
+#suggestedTasks button {
+  padding:6px 10px;
+  border-radius:8px;
+  border:none;
+  background:#4a90e2;
+  color:white;
+  cursor:pointer;
+  margin-left:5px;
+  transition:0.2s;
+}
+
+#taskList button:hover,
+#completedTasks button:hover,
+#suggestedTasks button:hover { opacity:0.85; }
+
+.task-done span.task-text {
+  text-decoration:line-through;
+  color:#666;
+}
+
+.task-done {
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.task-timer {
+  font-weight: 600;
+  color: #333;
+  min-width: 56px;
+  text-align: right;
+}
+
+/* Modal */
+.modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-inner {
+  background:#fff;
+  max-width:400px;
+  margin:0 auto;
+  padding:16px;
+  border-radius:10px;
+}
+
+/* Themes */
+body[data-theme="light"] {
+  --card-bg:#ffffff;
+  --button-bg:#4a90e2;
+  --text-color:#000000;
+  background:#f5f5f5;
+  color:var(--text-color);
+}
+
+body[data-theme="dark"] {
+  --card-bg:#1e1e1e;
+  --button-bg:#3a3a3a;
+  --text-color:#ffffff;
+  background:#121212;
+  color:var(--text-color);
+}
+
+/* ---------------------------
+   Additional Themes
+----------------------------*/
+
+/* 🌅 Sunset Glow */
+body[data-theme="sunsetglow"] {
+  --card-bg:#FFE9D6;
+  --button-bg:#FF7A5C;
+  --text-color:#4A2C2A;
+  background:linear-gradient(180deg,#FFD7C2 0%,#FFB199 100%);
+  color:var(--text-color);
+}
+
+/* 🌌 Nebula */
+body[data-theme="nebula"] {
+  --card-bg:#1A1033;
+  --button-bg:#8A4FFF;
+  --text-color:#EDE7FF;
+  background:linear-gradient(180deg,#2A145A 0%,#120A2C 100%);
+  color:var(--text-color);
+}
+
+/* 🌿 Meadow */
+body[data-theme="meadow"] {
+  --card-bg:#E8F5E1;
+  --button-bg:#5CB85C;
+  --text-color:#1F3D1F;
+  background:linear-gradient(180deg,#DFF4D8 0%,#C8E6C9 100%);
+  color:var(--text-color);
+}
+
+/* 🧊 Frost */
+body[data-theme="frost"] {
+  --card-bg:#F0F7FF;
+  --button-bg:#6BB6FF;
+  --text-color:#0A2A42;
+  background:linear-gradient(180deg,#DCEBFF 0%,#BFD9FF 100%);
+  color:var(--text-color);
+}
+
+/* 🎨 Pastel Dream */
+body[data-theme="pasteldream"] {
+  --card-bg:#FFF7FF;
+  --button-bg:#FFB3D9;
+  --text-color:#4A3A4A;
+  background:linear-gradient(180deg,#FFE6F7 0%,#FFF0FF 100%);
+  color:var(--text-color);
+}
+
+/* 🔥 Inferno */
+body[data-theme="inferno"] {
+  --card-bg:#2B0A0A;
+  --button-bg:#FF5733;
+  --text-color:#FFD9D9;
+  background:linear-gradient(180deg,#3D0E0E 0%,#1A0000 100%);
+  color:var(--text-color);
+}
+
+/* (Other themes unchanged — they stay as-is) */
+
+@media (max-width:600px) {
+  .top-controls { flex-direction:column; align-items:stretch; }
+  .avatar-panel { justify-content:center; }
+  .task-input-area { flex-direction:column; }
+  .task-input-area button { width:100%; }
+}

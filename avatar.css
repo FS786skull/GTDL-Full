@@ -1,0 +1,105 @@
+/* ============================================================
+   AVATAR CSS — FINAL SPLIT VERSION
+   Works with avatar.js + app.js + your HTML SVG
+   ============================================================ */
+
+/* Base Avatar Layout */
+#avatarSVG {
+  transition: transform 0.25s ease, filter 0.25s ease;
+  transform-origin: center bottom;
+}
+
+/* Jump Animation */
+#avatarSVG.jump {
+  animation: avatarJump 0.6s ease-out;
+}
+
+@keyframes avatarJump {
+  0%   { transform: translateY(0); }
+  20%  { transform: translateY(-18px); }
+  40%  { transform: translateY(-26px); }
+  60%  { transform: translateY(-18px); }
+  80%  { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+/* Eye Styles */
+.eye { transition: fill 0.2s ease, r 0.2s ease; }
+
+.eye-normal { fill: #111; r: 4; }
+.eye-bright { fill: #4fc3f7; r: 4.5; }
+.eye-tech   { fill: #00e5ff; r: 5; filter: drop-shadow(0 0 4px #00e5ff); }
+
+/* Outfit Filters */
+#avatarSVG.blue     { filter: hue-rotate(200deg); }
+#avatarSVG.red      { filter: hue-rotate(-20deg); }
+#avatarSVG.purple   { filter: hue-rotate(260deg); }
+#avatarSVG.ninja    { filter: brightness(0.6) saturate(0.8); }
+#avatarSVG.knight   { filter: brightness(1.2) saturate(0.6); }
+#avatarSVG.explorer { filter: hue-rotate(40deg) saturate(1.2); }
+
+/* Glow Effect */
+.avatar-glow {
+  filter: drop-shadow(0 0 10px rgba(0,255,255,0.6))
+          drop-shadow(0 0 20px rgba(0,255,255,0.4));
+}
+
+/* Tech Visor */
+.avatar-visor .eye {
+  fill: #00e5ff !important;
+  r: 5 !important;
+}
+
+.avatar-visor #eyes {
+  filter: drop-shadow(0 0 6px #00e5ff);
+}
+
+/* Badge Styling */
+#badge > * {
+  stroke: #b8860b;
+  stroke-width: 1.5;
+  fill: #ffd54f;
+  transition: transform 0.2s ease;
+}
+
+#badge:hover > * {
+  transform: scale(1.15);
+}
+
+/* Expression Transitions */
+#mouth { transition: d 0.25s ease; }
+
+/* Theme Filters */
+body.theme-dark #avatarSVG      { filter: brightness(0.85); }
+body.theme-midnight #avatarSVG  { filter: brightness(0.7) contrast(1.2); }
+body.theme-sunrise #avatarSVG   { filter: hue-rotate(20deg) saturate(1.3); }
+body.theme-ocean #avatarSVG     { filter: hue-rotate(160deg) saturate(1.4); }
+body.theme-forest #avatarSVG    { filter: hue-rotate(90deg) saturate(1.2); }
+body.theme-candy #avatarSVG     { filter: hue-rotate(300deg) saturate(1.5); }
+body.theme-steel #avatarSVG     { filter: grayscale(0.4) brightness(1.1); }
+body.theme-monochrome #avatarSVG { filter: grayscale(1); }
+
+/* Hover Interaction */
+#avatarSVG:hover {
+  transform: scale(1.02);
+}
+
+/* Aura Glow Effect */
+.avatar-wrapper.glow-on {
+  filter:
+    drop-shadow(0 0 6px rgba(0, 200, 255, 0.7))
+    drop-shadow(0 0 12px rgba(0, 200, 255, 0.5))
+    drop-shadow(0 0 20px rgba(0, 200, 255, 0.4));
+  transition: filter 0.3s ease;
+}
+
+/* Optional pulsing animation */
+@keyframes auraPulse {
+  0% { filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.7)); }
+  50% { filter: drop-shadow(0 0 14px rgba(0, 200, 255, 1)); }
+  100% { filter: drop-shadow(0 0 6px rgba(0, 200, 255, 0.7)); }
+}
+
+.avatar-wrapper.glow-on.pulse {
+  animation: auraPulse 2s infinite ease-in-out;
+}
